@@ -41,10 +41,12 @@ import time
 from example_process_streams import BinanceWebSocketApiProcessStreams
 
 logging.getLogger("unicorn_binance_websocket_api.unicorn_binance_websocket_api_manager")
-logging.basicConfig(level=logging.DEBUG,
-                    filename=os.path.basename(__file__) + '.log',
-                    format="{asctime} [{levelname:8}] {process} {thread} {module}: {message}",
-                    style="{")
+logging.basicConfig(
+    level=logging.DEBUG,
+    filename=f'{os.path.basename(__file__)}.log',
+    format="{asctime} [{levelname:8}] {process} {thread} {module}: {message}",
+    style="{",
+)
 
 # create instance of BinanceWebSocketApiManager and provide the function for stream processing
 binance_websocket_api_manager = BinanceWebSocketApiManager(BinanceWebSocketApiProcessStreams.process_stream_data)
@@ -116,9 +118,7 @@ markets.remove('eosusdt')
 
 # edit channels list
 channels.remove('miniTicker')
-channels.append('kline_2w')
-channels.append('depth5')
-
+channels.extend(('kline_2w', 'depth5'))
 # start the new multi stream
 second_multi_stream_id = binance_websocket_api_manager.create_stream(channels, markets)
 

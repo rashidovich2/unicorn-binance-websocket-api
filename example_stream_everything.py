@@ -55,10 +55,12 @@ channels = {'aggTrade', 'trade', 'kline_1m', 'kline_5m', 'kline_15m', 'kline_30m
 arr_channels = {'!miniTicker', '!ticker', '!bookTicker'}
 
 logging.getLogger("unicorn_binance_websocket_api.unicorn_binance_websocket_api_manager")
-logging.basicConfig(level=logging.INFO,
-                    filename=os.path.basename(__file__) + '.log',
-                    format="{asctime} [{levelname:8}] {process} {thread} {module}: {message}",
-                    style="{")
+logging.basicConfig(
+    level=logging.INFO,
+    filename=f'{os.path.basename(__file__)}.log',
+    format="{asctime} [{levelname:8}] {process} {thread} {module}: {message}",
+    style="{",
+)
 
 
 def print_stream_data_from_stream_buffer(binance_websocket_api_manager):
@@ -66,9 +68,7 @@ def print_stream_data_from_stream_buffer(binance_websocket_api_manager):
         if binance_websocket_api_manager.is_manager_stopping():
             exit(0)
         oldest_stream_data_from_stream_buffer = binance_websocket_api_manager.pop_stream_data_from_stream_buffer()
-        if oldest_stream_data_from_stream_buffer is not False:
-            pass
-        else:
+        if oldest_stream_data_from_stream_buffer is False:
             time.sleep(0.01)
 
 try:
@@ -83,11 +83,8 @@ ubwa = unicorn_binance_websocket_api.BinanceWebSocketApiManager()
 worker_thread = threading.Thread(target=print_stream_data_from_stream_buffer, args=(ubwa,))
 worker_thread.start()
 
-markets = []
 data = ubra.get_all_tickers()
-for item in data:
-    markets.append(item['symbol'])
-
+markets = [item['symbol'] for item in data]
 private_stream_id_alice = ubwa.create_stream(["!userData"],
                                              ["arr"],
                                              api_key=binance_api_key,
@@ -116,8 +113,14 @@ for channel in channels:
         for market in markets:
             markets_sub.append(market)
             if i == max_subscriptions or loops*max_subscriptions + i == len(markets):
-                ubwa.create_stream(channel, markets_sub, stream_label=str(channel+"_"+str(i)),
-                                   ping_interval=10, ping_timeout=10, close_timeout=5)
+                ubwa.create_stream(
+                    channel,
+                    markets_sub,
+                    stream_label=str(f"{channel}_{str(i)}"),
+                    ping_interval=10,
+                    ping_timeout=10,
+                    close_timeout=5,
+                )
                 markets_sub = []
                 i = 1
                 loops += 1

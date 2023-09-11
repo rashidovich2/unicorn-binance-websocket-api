@@ -39,11 +39,14 @@ binance_websocket_api_manager = unicorn_binance_websocket_api.BinanceWebSocketAp
 
 # get version of the used UNICORN Binance WebSocket API
 if binance_websocket_api_manager.is_update_availabe():
-    print("Please upgrade to " + binance_websocket_api_manager.get_latest_version() + ", you are on",
-          binance_websocket_api_manager.get_version())
+    print(
+        f"Please upgrade to {binance_websocket_api_manager.get_latest_version()}, you are on",
+        binance_websocket_api_manager.get_version(),
+    )
 
-    latest_release_info = binance_websocket_api_manager.get_latest_release_info()
-    if latest_release_info:
+    if (
+        latest_release_info := binance_websocket_api_manager.get_latest_release_info()
+    ):
         print("Please download the latest release or run `pip install unicorn-binance-websocket-api --upgrade`: ")
         print("\ttar: " + latest_release_info["tarball_url"])
         print("\tzip: " + latest_release_info["zipball_url"])

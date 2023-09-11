@@ -169,8 +169,8 @@ class BinanceWebSocketApiManager(threading.Thread):
                  stream_buffer_maxlen=None,
                  process_stream_signals=False):
         threading.Thread.__init__(self)
-        self.name = "unicorn-binance-websocket-api"
         self.version = "1.35.0.dev"
+        self.name = "unicorn-binance-websocket-api"
         logger.info(f"New instance of {self.get_user_agent()} on "
                     f"{str(platform.system())} {str(platform.release())} for exchange {exchange} started ...")
         if disable_colorama is not True:
@@ -180,19 +180,19 @@ class BinanceWebSocketApiManager(threading.Thread):
         if process_stream_data is False:
             # no special method to process stream data provided, so we use add_to_stream_buffer:
             self.process_stream_data = self.add_to_stream_buffer
-            logger.info(f"Using `stream_buffer`")
+            logger.info("Using `stream_buffer`")
         else:
             # use the provided method to process stream data:
             self.process_stream_data = process_stream_data
-            logger.info(f"Using `process_stream_data`")
+            logger.info("Using `process_stream_data`")
         if process_stream_signals is False:
             # no special method to process stream signals provided, so we use add_to_stream_signal_buffer:
             self.process_stream_signals = self.add_to_stream_signal_buffer
-            logger.info(f"Using `stream_signal_buffer`")
+            logger.info("Using `stream_signal_buffer`")
         else:
             # use the provided method to process stream signals:
             self.process_stream_signals = process_stream_signals
-            logger.info(f"Using `process_stream_signals` ...")
+            logger.info("Using `process_stream_signals` ...")
         self.exchange = exchange
         if self.exchange == "binance.com":
             self.websocket_base_uri = "wss://stream.binance.com:9443/"
@@ -215,7 +215,10 @@ class BinanceWebSocketApiManager(threading.Thread):
         elif self.exchange == "binance.com-futures":
             self.websocket_base_uri = "wss://fstream.binance.com/"
             self.max_subscriptions_per_stream = 200
-        elif self.exchange == "binance.com-coin-futures" or self.exchange == "binance.com-coin_futures":
+        elif self.exchange in [
+            "binance.com-coin-futures",
+            "binance.com-coin_futures",
+        ]:
             self.websocket_base_uri = "wss://dstream.binance.com/"
             self.max_subscriptions_per_stream = 200
         elif self.exchange == "binance.com-futures-testnet":
@@ -239,9 +242,9 @@ class BinanceWebSocketApiManager(threading.Thread):
         else:
             # Unknown Exchange
             error_msg = f"Unknown exchange '{str(self.exchange)}'! Read the docs to see a list of supported " \
-                        "exchanges: https://lucit-systems-and-development.github.io/unicorn-binance-websocket-api/unicorn_" \
-                        "binance_websocket_api.html#module-unicorn_binance_websocket_api.unicorn_binance_websocket_" \
-                        "api_manager"
+                            "exchanges: https://lucit-systems-and-development.github.io/unicorn-binance-websocket-api/unicorn_" \
+                            "binance_websocket_api.html#module-unicorn_binance_websocket_api.unicorn_binance_websocket_" \
+                            "api_manager"
             logger.critical(error_msg)
             raise UnknownExchange(error_msg)
         self.stop_manager_request = None
@@ -306,9 +309,7 @@ class BinanceWebSocketApiManager(threading.Thread):
         self.replacement_text = "***SECRET_REMOVED***"
         self.restclient = BinanceWebSocketApiRestclient(self)
         if warn_on_update and self.is_update_availabe():
-            update_msg = f"Release {self.name}_" + self.get_latest_version() + " is available, " \
-                         "please consider updating! (Changelog: https://github.com/LUCIT-Systems-and-Development/unicorn-" \
-                         "binance-websocket-api/blob/master/CHANGELOG.md)"
+            update_msg = f"Release {self.name}_{self.get_latest_version()} is available, please consider updating! (Changelog: https://github.com/LUCIT-Systems-and-Development/unicorn-binance-websocket-api/blob/master/CHANGELOG.md)"
             print(update_msg)
             logger.warning(update_msg)
 
@@ -465,9 +466,7 @@ class BinanceWebSocketApiManager(threading.Thread):
             if stream_buffer_name is not False:
                 self.stream_buffer_locks[stream_buffer_name] = threading.Lock()
                 try:
-                    # Not resetting the stream_buffer during a restart:
-                    if self.stream_buffers[stream_buffer_name]:
-                        pass
+                    pass
                 except KeyError:
                     self.stream_buffers[stream_buffer_name] = deque(maxlen=stream_buffer_maxlen)
         asyncio.set_event_loop(loop)

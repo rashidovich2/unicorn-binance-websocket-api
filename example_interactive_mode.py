@@ -53,10 +53,12 @@ except ImportError:
     sys.exit(1)
 
 logging.getLogger("unicorn_binance_websocket_api.unicorn_binance_websocket_api_manager")
-logging.basicConfig(level=logging.INFO,
-                    filename=os.path.basename(__file__) + '.log',
-                    format="{asctime} [{levelname:8}] {process} {thread} {module}: {message}",
-                    style="{")
+logging.basicConfig(
+    level=logging.INFO,
+    filename=f'{os.path.basename(__file__)}.log',
+    format="{asctime} [{levelname:8}] {process} {thread} {module}: {message}",
+    style="{",
+)
 
 
 def print_stream_data_from_stream_buffer(binance_websocket_api_manager):
@@ -64,9 +66,7 @@ def print_stream_data_from_stream_buffer(binance_websocket_api_manager):
         if binance_websocket_api_manager.is_manager_stopping():
             exit(0)
         oldest_stream_data_from_stream_buffer = binance_websocket_api_manager.pop_stream_data_from_stream_buffer()
-        if oldest_stream_data_from_stream_buffer is not False:
-            pass
-        else:
+        if oldest_stream_data_from_stream_buffer is False:
             time.sleep(0.01)
 
 
@@ -80,8 +80,6 @@ channels = {'aggTrade', 'trade', 'kline_1m', 'kline_5m', 'kline_15m', 'kline_30m
             'kline_6h', 'kline_8h', 'kline_12h', 'kline_1d', 'kline_3d', 'kline_1w', 'kline_1M', 'miniTicker',
             'ticker', 'bookTicker', 'depth5', 'depth10', 'depth20', 'depth', 'depth@100ms'}
 arr_channels = {'!miniTicker', '!ticker', '!bookTicker'}
-markets = []
-
 try:
     binance_api_key = ""
     binance_api_secret = ""
@@ -99,9 +97,7 @@ print_summary_thread = threading.Thread(target=print_stream, args=(binance_webso
 print_summary_thread.start()
 
 data = binance_rest_client.get_all_tickers()
-for item in data:
-    markets.append(item['symbol'])
-
+markets = [item['symbol'] for item in data]
 binance_websocket_api_manager.create_stream(["!userData"], ["arr"], "Alice userData stream",
                                             api_key="aaa", api_secret="bbb")
 binance_websocket_api_manager.create_stream(["!userData"], ["arr"], "Bobs userData stream",

@@ -41,11 +41,11 @@ api_secret = ""
 
 
 def book_ticker(msg):
-    print("book_ticker: " + str(msg))
+    print(f"book_ticker: {str(msg)}")
 
 
 def order_status(msg):
-    print("order_status: " + str(msg))
+    print(f"order_status: {str(msg)}")
 
 
 bwsm = BinanceWebSocketApiManager()
@@ -54,10 +54,8 @@ book_ticker_id = bwsm.create_stream("bookTicker", 'bnbbusd', stream_buffer_name=
 user_stream_id = bwsm.create_stream('arr', '!userData', api_key=api_key, api_secret=api_secret, stream_buffer_name=True)
 
 while True:
-    msg = bwsm.pop_stream_data_from_stream_buffer(book_ticker_id)
-    if msg:
+    if msg := bwsm.pop_stream_data_from_stream_buffer(book_ticker_id):
         book_ticker(msg)
-    msg = bwsm.pop_stream_data_from_stream_buffer(user_stream_id)
-    if msg:
+    if msg := bwsm.pop_stream_data_from_stream_buffer(user_stream_id):
         order_status(msg)
     time.sleep(0.01)

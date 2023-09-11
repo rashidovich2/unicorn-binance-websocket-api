@@ -57,20 +57,23 @@ class BinanceWebSocketApiProcessStreams(object):
         # to see the difference.
         # Github: https://github.com/LUCIT-Systems-and-Development/unicorn-fy
         # PyPI: https://pypi.org/project/unicorn-fy/
-        if exchange == "binance.com" or exchange == "binance.com-testnet":
+        if exchange in ["binance.com", "binance.com-testnet"]:
             unicorn_fied_stream_data = UnicornFy.binance_com_websocket(received_stream_data_json)
-        elif exchange == "binance.com-futures" or exchange == "binance.com-futures-testnet":
+        elif exchange in ["binance.com-futures", "binance.com-futures-testnet"]:
             unicorn_fied_stream_data = UnicornFy.binance_com_futures_websocket(received_stream_data_json)
-        elif exchange == "binance.com-margin" or exchange == "binance.com-margin-testnet":
+        elif exchange in ["binance.com-margin", "binance.com-margin-testnet"]:
             unicorn_fied_stream_data = UnicornFy.binance_com_margin_websocket(received_stream_data_json)
-        elif exchange == "binance.com-isolated_margin" or exchange == "binance.com-isolated_margin-testnet":
+        elif exchange in [
+            "binance.com-isolated_margin",
+            "binance.com-isolated_margin-testnet",
+        ]:
             unicorn_fied_stream_data = UnicornFy.binance_com_margin_websocket(received_stream_data_json)
         elif exchange == "binance.je":
             unicorn_fied_stream_data = UnicornFy.binance_je_websocket(received_stream_data_json)
         elif exchange == "binance.us":
             unicorn_fied_stream_data = UnicornFy.binance_us_websocket(received_stream_data_json)
         else:
-            logging.error("Not a valid exchange: " + str(exchange))
+            logging.error(f"Not a valid exchange: {str(exchange)}")
 
         # Now you can call different methods for different `channels`, here called `event_types`.
         # Its up to you if you call the methods in the bottom of this file or to call other classes which do what

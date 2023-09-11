@@ -82,7 +82,10 @@ class BinanceWebSocketApiRestclient(object):
         elif self.manager.exchange == "binance.com-futures-testnet":
             self.restful_base_uri = "https://testnet.binancefuture.com/"
             self.path_userdata = "fapi/v1/listenKey"
-        elif self.manager.exchange == "binance.com-coin-futures" or self.manager.exchange == "binance.com-coin_futures":
+        elif self.manager.exchange in [
+            "binance.com-coin-futures",
+            "binance.com-coin_futures",
+        ]:
             self.restful_base_uri = "https://dapi.binance.com/"
             self.path_userdata = "dapi/v1/listenKey"
         elif self.manager.exchange == "binance.je":
@@ -114,9 +117,7 @@ class BinanceWebSocketApiRestclient(object):
                 response = self._request(method, self.path_userdata, False, {'listenKey': str(self.listen_key)})
                 self.last_static_ping_listen_key = time.time()
                 return response
-            except KeyError:
-                return False
-            except TypeError:
+            except (KeyError, TypeError):
                 return False
         elif action == "delete":
             logger.info(f"BinanceWebSocketApiRestclient.delete_listen_key({str(self.listen_key_output)})")
@@ -125,11 +126,7 @@ class BinanceWebSocketApiRestclient(object):
                 response = self._request(method, self.path_userdata, False, {'listenKey': str(self.listen_key)})
                 self.listen_key = False
                 return response
-            except KeyError as error_msg:
-                logger.error(f"BinanceWebSocketApiRestclient.delete_listen_key({str(self.listen_key_output)}) - "
-                              f"KeyError - error_msg: {str(error_msg)}")
-                return False
-            except TypeError as error_msg:
+            except (KeyError, TypeError) as error_msg:
                 logger.error(f"BinanceWebSocketApiRestclient.delete_listen_key({str(self.listen_key_output)}) - "
                               f"KeyError - error_msg: {str(error_msg)}")
                 return False
@@ -277,8 +274,10 @@ class BinanceWebSocketApiRestclient(object):
                             symbol=symbol,
                             last_static_ping_listen_key=last_static_ping_listen_key)
             method = "post"
-            if self.manager.exchange == "binance.com-isolated_margin" or \
-                    self.manager.exchange == "binance.com-isolated_margin-testnet":
+            if self.manager.exchange in [
+                "binance.com-isolated_margin",
+                "binance.com-isolated_margin-testnet",
+            ]:
                 if self.symbol is False:
                     logger.critical("BinanceWebSocketApiRestclient.get_listen_key() - error_msg: Parameter "
                                      "`symbol` is missing!")

@@ -39,10 +39,12 @@ import os
 
 
 logging.getLogger("unicorn_binance_websocket_api.unicorn_binance_websocket_api_manager")
-logging.basicConfig(level=logging.INFO,
-                    filename=os.path.basename(__file__) + '.log',
-                    format="{asctime} [{levelname:8}] {process} {thread} {module}: {message}",
-                    style="{")
+logging.basicConfig(
+    level=logging.INFO,
+    filename=f'{os.path.basename(__file__)}.log',
+    format="{asctime} [{levelname:8}] {process} {thread} {module}: {message}",
+    style="{",
+)
 
 # create instance of BinanceWebSocketApiManager
 binance_websocket_api_manager = BinanceWebSocketApiManager(exchange="binance.com", stream_buffer_maxlen=3)
@@ -67,7 +69,7 @@ print(f"sb-len: {binance_websocket_api_manager.get_stream_buffer_length()}")
 time.sleep(1)
 print(f"sb-len: {binance_websocket_api_manager.get_stream_buffer_length()}")
 time.sleep(1)
-print(f"clearing...")
+print("clearing...")
 binance_websocket_api_manager.clear_stream_buffer(stream_buffer_name="buffer1")
 binance_websocket_api_manager.clear_stream_buffer(stream_buffer_name="buffer2")
 print(f"sb-len: {binance_websocket_api_manager.get_stream_buffer_length()}")
@@ -116,27 +118,19 @@ print(f"sb-len: {binance_websocket_api_manager.get_stream_buffer_length()}")
 time.sleep(1)
 print(f"sb-len: {binance_websocket_api_manager.get_stream_buffer_length()}")
 
-print(f"FIFO START ##################################################")
-i = 0
-while i < 5:
+print("FIFO START ##################################################")
+for _ in range(5):
     oldest_stream_data_from_stream_buffer = binance_websocket_api_manager.pop_stream_data_from_stream_buffer(stream_buffer_name="buffer1")
     if oldest_stream_data_from_stream_buffer is False:
         time.sleep(0.01)
-    else:
-        if oldest_stream_data_from_stream_buffer is not None:
-            print(f"FIFO: {oldest_stream_data_from_stream_buffer}")
-    i += 1
-
-print(f"LIFO START ##################################################")
-i = 0
-while i < 5:
+    elif oldest_stream_data_from_stream_buffer is not None:
+        print(f"FIFO: {oldest_stream_data_from_stream_buffer}")
+print("LIFO START ##################################################")
+for _ in range(5):
     oldest_stream_data_from_stream_buffer = binance_websocket_api_manager.pop_stream_data_from_stream_buffer(stream_buffer_name="buffer2",
                                                                                                              mode="LIFO")
     if oldest_stream_data_from_stream_buffer is False:
         time.sleep(0.01)
-    else:
-        if oldest_stream_data_from_stream_buffer is not None:
-            print(f"LIFO: {oldest_stream_data_from_stream_buffer}")
-    i += 1
-
+    elif oldest_stream_data_from_stream_buffer is not None:
+        print(f"LIFO: {oldest_stream_data_from_stream_buffer}")
 binance_websocket_api_manager.stop_manager_with_all_streams()
