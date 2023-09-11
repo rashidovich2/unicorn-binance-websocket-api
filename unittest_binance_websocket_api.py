@@ -44,12 +44,14 @@ BINANCE_COM_API_KEY = ""
 BINANCE_COM_API_SECRET = ""
 
 logging.getLogger("unicorn_binance_websocket_api.unicorn_binance_websocket_api_manager")
-logging.basicConfig(level=logging.DEBUG,
-                    filename=os.path.basename(__file__) + '.log',
-                    format="{asctime} [{levelname:8}] {process} {thread} {module}: {message}",
-                    style="{")
+logging.basicConfig(
+    level=logging.DEBUG,
+    filename=f'{os.path.basename(__file__)}.log',
+    format="{asctime} [{levelname:8}] {process} {thread} {module}: {message}",
+    style="{",
+)
 
-print(f"Starting unittests:")
+print("Starting unittests:")
 
 
 class TestBinanceComManager(unittest.TestCase):
@@ -768,10 +770,8 @@ class TestRestApi(unittest.TestCase):
         binance_api_key = ""
         binance_api_secret = ""
         binance_rest_client = unicorn_binance_rest_api.BinanceRestApiManager(binance_api_key, binance_api_secret)
-        markets = []
         data = binance_rest_client.get_all_tickers()
-        for item in data:
-            markets.append(item['symbol'])
+        markets = [item['symbol'] for item in data]
         binance_websocket_api_manager.create_stream("trade", markets, stream_label="to much!")
 
         time.sleep(10)

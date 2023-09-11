@@ -39,10 +39,12 @@ import threading
 import os
 
 logging.getLogger("unicorn_binance_websocket_api.unicorn_binance_websocket_api_manager")
-logging.basicConfig(level=logging.DEBUG,
-                    filename=os.path.basename(__file__) + '.log',
-                    format="{asctime} [{levelname:8}] {process} {thread} {module}: {message}",
-                    style="{")
+logging.basicConfig(
+    level=logging.DEBUG,
+    filename=f'{os.path.basename(__file__)}.log',
+    format="{asctime} [{levelname:8}] {process} {thread} {module}: {message}",
+    style="{",
+)
 
 
 def print_stream_data_from_stream_buffer(binance_websocket_api_manager):
@@ -68,7 +70,7 @@ worker_thread.start()
 time.sleep(5)
 binance_websocket_api_manager.get_stream_subscriptions(stream_id)
 time.sleep(3)
-print(str(binance_websocket_api_manager.get_results_from_endpoints()))
+print(binance_websocket_api_manager.get_results_from_endpoints())
 time.sleep(5)
 # show an overview
 while True:

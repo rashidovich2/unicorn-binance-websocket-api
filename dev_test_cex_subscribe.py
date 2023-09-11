@@ -40,10 +40,12 @@ import os
 
 
 logging.getLogger("unicorn_binance_websocket_api.unicorn_binance_websocket_api_manager")
-logging.basicConfig(level=logging.DEBUG,
-                    filename=os.path.basename(__file__) + '.log',
-                    format="{asctime} [{levelname:8}] {process} {thread} {module}: {message}",
-                    style="{")
+logging.basicConfig(
+    level=logging.DEBUG,
+    filename=f'{os.path.basename(__file__)}.log',
+    format="{asctime} [{levelname:8}] {process} {thread} {module}: {message}",
+    style="{",
+)
 
 
 def print_stream_data_from_stream_buffer(binance_websocket_api_manager):
@@ -53,9 +55,6 @@ def print_stream_data_from_stream_buffer(binance_websocket_api_manager):
         oldest_stream_data_from_stream_buffer = binance_websocket_api_manager.pop_stream_data_from_stream_buffer()
         if oldest_stream_data_from_stream_buffer is False:
             time.sleep(0.01)
-        else:
-            #print(oldest_stream_data_from_stream_buffer)
-            pass
 
 
 # create instance of BinanceWebSocketApiManager for Binance Chain DEX
@@ -111,10 +110,10 @@ binance_websocket_api_manager.subscribe_to_stream(stream_id,
 time.sleep(10)
 binance_websocket_api_manager.get_stream_subscriptions(stream_id)
 results = binance_websocket_api_manager.get_results_from_endpoints()
-print(str(results))
+print(results)
 time.sleep(5)
 for result in results:
-    print(str(result))
+    print(result)
 
 while True:
     #binance_websocket_api_manager.print_summary()

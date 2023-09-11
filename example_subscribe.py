@@ -40,10 +40,12 @@ import os
 
 
 logging.getLogger("unicorn_binance_websocket_api.unicorn_binance_websocket_api_manager")
-logging.basicConfig(level=logging.INFO,
-                    filename=os.path.basename(__file__) + '.log',
-                    format="{asctime} [{levelname:8}] {process} {thread} {module}: {message}",
-                    style="{")
+logging.basicConfig(
+    level=logging.INFO,
+    filename=f'{os.path.basename(__file__)}.log',
+    format="{asctime} [{levelname:8}] {process} {thread} {module}: {message}",
+    style="{",
+)
 
 
 def print_stream_data_from_stream_buffer(binance_websocket_api_manager):
@@ -53,9 +55,6 @@ def print_stream_data_from_stream_buffer(binance_websocket_api_manager):
         oldest_stream_data_from_stream_buffer = binance_websocket_api_manager.pop_stream_data_from_stream_buffer()
         if oldest_stream_data_from_stream_buffer is False:
             time.sleep(0.01)
-        else:
-            #print(oldest_stream_data_from_stream_buffer)
-            pass
 
 
 binance_websocket_api_manager = BinanceWebSocketApiManager(exchange="binance.com")
@@ -102,7 +101,7 @@ while binance_websocket_api_manager.get_result_by_request_id(request_id) is Fals
     print("Wait to receive the result!")
     time.sleep(0.5)
 
-print(str(binance_websocket_api_manager.get_result_by_request_id(request_id)))
+print(binance_websocket_api_manager.get_result_by_request_id(request_id))
 
 time.sleep(10)
 while True:

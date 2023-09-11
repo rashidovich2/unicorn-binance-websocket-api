@@ -55,10 +55,12 @@ channels = {'aggTrade', 'trade', 'kline_1m', 'kline_5m', 'kline_15m', 'kline_30m
 arr_channels = {'!miniTicker', '!ticker', '!bookTicker'}
 
 logging.getLogger("unicorn_binance_websocket_api.unicorn_binance_websocket_api_manager")
-logging.basicConfig(level=logging.INFO,
-                    filename=os.path.basename(__file__) + '.log',
-                    format="{asctime} [{levelname:8}] {process} {thread} {module}: {message}",
-                    style="{")
+logging.basicConfig(
+    level=logging.INFO,
+    filename=f'{os.path.basename(__file__)}.log',
+    format="{asctime} [{levelname:8}] {process} {thread} {module}: {message}",
+    style="{",
+)
 
 
 def print_stream_data_from_stream_buffer(binance_websocket_api_manager):
@@ -89,11 +91,8 @@ except requests.exceptions.ConnectionError:
 worker_thread = threading.Thread(target=print_stream_data_from_stream_buffer, args=(binance_websocket_api_manager,))
 worker_thread.start()
 
-markets = []
 data = binance_rest_client.get_all_tickers()
-for item in data:
-    markets.append(item['symbol'])
-
+markets = [item['symbol'] for item in data]
 private_stream_id = binance_websocket_api_manager.create_stream(["!userData"],
                                                                 ["arr"],
                                                                 api_key=binance_api_key,
@@ -115,8 +114,11 @@ for channel in channels:
         for market in markets:
             markets_sub.append(market)
             if i == max_subscriptions or loops * max_subscriptions + i == len(markets):
-                binance_websocket_api_manager.create_stream(channel, markets_sub,
-                                                            stream_label=str(channel + "_" + str(i)))
+                binance_websocket_api_manager.create_stream(
+                    channel,
+                    markets_sub,
+                    stream_label=str(f"{channel}_{str(i)}"),
+                )
                 markets_sub = []
                 i = 1
                 loops += 1
